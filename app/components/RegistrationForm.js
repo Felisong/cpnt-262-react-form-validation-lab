@@ -19,18 +19,27 @@ export default function RegistrationForm() {
   const [emailErrorText, setEmailErrorText] = useState(``);
 
   // Add state for isFormValid
-  const [isFormValid, setIsFormValid] = useState();
+  const [isFormValid, setIsFormValid] = useState(true);
   const [isFormValidError, setIsFormValidError] = useState();
 
   // Add state to set formData
   const [formData, setFormData] = useState(null); // For storing and displaying results
 
-  const cantSubmitForm =
-    nameErrorText.length !== 0 ||
-    passwordError.length !== 0 ||
-    confirmPasswordError.length !== 0;
   // Add function to validateForm
-  function validateForm() {}
+  function validateForm() {
+    if (
+      nameErrorText.length === 0 &&
+      passwordError.length === 0 &&
+      confirmPasswordError.length === 0 &&
+      name.length > 0 &&
+      password.length > 0 &&
+      confirmPassword.length > 0
+    ) {
+      setIsFormValid(true);
+    }
+    setIsFormValid(false);
+    setIsFormValidError('Form has not met all conditions to submit.');
+  }
 
   // Add function to validate username
   function validateName(e) {
@@ -158,10 +167,16 @@ export default function RegistrationForm() {
             <button
               type="submit"
               className={`w-full py-2 rounded bg-blue-600`}
-              disabled={true}
+              disabled={!isFormValid}
             >
               Register
             </button>
+            {!isFormValid ? (
+              <p className="text-red-500 text-sm mt-2"> {isFormValidError}</p>
+            ) : (
+              <p></p>
+            )}
+            {console.log(isFormValid)}
           </form>
         </div>
 
