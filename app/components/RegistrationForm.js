@@ -25,6 +25,10 @@ export default function RegistrationForm() {
   // Add state to set formData
   const [formData, setFormData] = useState(null); // For storing and displaying results
 
+  const cantSubmitForm =
+    nameErrorText.length !== 0 ||
+    passwordError.length !== 0 ||
+    confirmPasswordError.length !== 0;
   // Add function to validateForm
   function validateForm() {
     if (
@@ -38,7 +42,6 @@ export default function RegistrationForm() {
       setIsFormValid(true);
     }
     setIsFormValid(false);
-    setIsFormValidError('Form has not met all conditions to submit.');
   }
 
   // Add function to validate username
@@ -144,6 +147,7 @@ export default function RegistrationForm() {
 
                   setConfirmPassword(value);
                   validateConfirmPassword(value);
+                  validateForm();
                 }}
               />
               {confirmPasswordError && (
@@ -167,16 +171,10 @@ export default function RegistrationForm() {
             <button
               type="submit"
               className={`w-full py-2 rounded bg-blue-600`}
-              disabled={!isFormValid}
+              disabled={isFormValid}
             >
               Register
             </button>
-            {!isFormValid ? (
-              <p className="text-red-500 text-sm mt-2"> {isFormValidError}</p>
-            ) : (
-              <p></p>
-            )}
-            {console.log(isFormValid)}
           </form>
         </div>
 
