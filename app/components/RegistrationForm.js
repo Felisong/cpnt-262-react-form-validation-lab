@@ -25,22 +25,16 @@ export default function RegistrationForm() {
   // Add state to set formData
   const [formData, setFormData] = useState(null); // For storing and displaying results
 
-  function conditions(validateFormName, validatePw, validatePwConfirm) {
-    return (
-      nameFormValidation(validateFormName) &&
-      pwFormValidation(validatePw) &&
-      confirmPwValidation(validatePwConfirm)
-    );
-  }
   // Add function to validateForm
-  function validateForm(validateFormName, validatePw, validatePwConfirm) {
-    const isValid = conditions(validateFormName, validatePw, validatePwConfirm);
-    setIsFormValid(isValid);
-    setIsFormValidError(
-      isValid ? '' : 'Please meet conditions of Form to submit.'
-    );
-  }
+  const cantSubmitForm =
+    nameErrorText.length !== 0 ||
+    passwordError.length !== 0 ||
+    confirmPasswordError.length !== 0 ||
+    name.length === 0 ||
+    password.length === 0 ||
+    confirmPassword.length === 0;
 
+  console.log(cantSubmitForm);
   // Add function to validate username
   function validateName(value) {
     if (value.length < 4) {
@@ -67,27 +61,10 @@ export default function RegistrationForm() {
   // Extra add function to validate email
 
   // Add function to handle username change
-  const nameFormValidation = (currentName) => {
-    if (currentName.length === 0 || nameErrorText.length > 0) {
-      return false;
-    } else {
-      return true;
-    }
-  };
 
   // Add function to handle password change
-  const pwFormValidation = (currentPw) => {
-    if (currentPw.length === 0 || passwordError.length > 0) {
-      return false;
-    } else {
-      return true;
-    }
-  };
 
   // Add function to handle confirm password change
-  const confirmPwValidation = (currentPwConfirm) => {
-    return currentPwConfirm.length > 0 && currentPwConfirm === password;
-  };
 
   // Extra - Add function to handle email value change
 
@@ -101,12 +78,7 @@ export default function RegistrationForm() {
           <h1 className="text-2xl font-bold text-blue-500 mb-6 text-center">
             Registration Form
           </h1>
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              preventDefault();
-            }}
-          >
+          <form className="space-y-4">
             <div>
               <label htmlFor="username" className="block font-semibold mb-2">
                 Username:
@@ -120,7 +92,6 @@ export default function RegistrationForm() {
                   const value = e.target.value;
                   setName(value);
                   validateName(value);
-                  validateForm(value, password, confirmPassword);
                 }}
               />
               {nameErrorText && (
@@ -140,7 +111,6 @@ export default function RegistrationForm() {
                   const value = e.target.value;
                   setPassword(value);
                   validatePassword(value);
-                  validateForm(name, value, confirmPassword);
                 }}
               />
               {passwordError && (
@@ -164,7 +134,6 @@ export default function RegistrationForm() {
 
                   setConfirmPassword(value);
                   validateConfirmPassword(value);
-                  validateForm(name, password, value);
                 }}
               />
 
@@ -192,11 +161,14 @@ export default function RegistrationForm() {
             <button
               type="submit"
               className={`w-full py-2 rounded bg-blue-600`}
-              disabled={!isFormValid}
+              disabled={cantSubmitForm}
+              onClick={(e) => {
+                e.preventDefault();
+              }}
             >
               Register
             </button>
-            {!isFormValid && (
+            {cantSubmitForm && (
               <p className="text-red-500 text-sm mt-2">Please fill out form</p>
             )}
           </form>
