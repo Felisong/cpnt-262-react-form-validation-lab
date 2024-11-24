@@ -59,6 +59,11 @@ export default function RegistrationForm() {
   }
 
   // Extra add function to validate email
+  function validateEmail(value) {
+    value.match(/@/g) && value.length !== 0
+      ? setEmailErrorText('')
+      : setEmailErrorText('Please include a @ in your email.');
+  }
 
   // Add function to handle username change
 
@@ -69,6 +74,15 @@ export default function RegistrationForm() {
   // Extra - Add function to handle email value change
 
   // Create a handleSubmitFunction
+  function handleSubmit(currentName, pw, currentEmail) {
+    const formDataToShow = {
+      username: `${currentName}`,
+      email: `${validateEmail(email) ? email : `N/A`}`,
+      password: `${pw}`,
+    };
+    setFormData(formDataToShow);
+    return formDataToShow;
+  }
 
   return (
     <div className="bg-black text-white min-h-screen flex justify-center items-center p-4">
@@ -151,8 +165,14 @@ export default function RegistrationForm() {
                 type="email"
                 id="email"
                 className="w-full p-2 bg-gray-900 text-white border border-gray-700 rounded focus:outline-none focus:ring focus:ring-blue-500"
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  setEmail(value);
+                  validateEmail(value);
+                }}
               />
-              <p className="text-red-500 text-sm mt-2"></p>
+              <p className="text-red-500 text-sm mt-2">{emailErrorText}</p>
             </div>
             {/* {console.log(` ${nameFormValidation(name)} &&
         ${pwFormValidation(password)} &&
@@ -160,10 +180,15 @@ export default function RegistrationForm() {
             {/* final check : ${isFormValid}`)} */}
             <button
               type="submit"
-              className={`w-full py-2 rounded bg-blue-600`}
+              className={`w-full py-2 rounded ${
+                cantSubmitForm
+                  ? `text-xl font-bold mb-4 bg-slate-600 text-white`
+                  : `text-xl font-bold mb-4 bg-blue-500 text-white`
+              }`}
               disabled={cantSubmitForm}
               onClick={(e) => {
                 e.preventDefault();
+                handleSubmit(name, password, email);
               }}
             >
               Register
