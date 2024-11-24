@@ -19,42 +19,47 @@ export default function RegistrationForm() {
   const [emailErrorText, setEmailErrorText] = useState(``);
 
   // Add state for isFormValid
-  const [isFormValid, setIsFormValid] = useState(true);
+  const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidError, setIsFormValidError] = useState();
 
   // Add state to set formData
   const [formData, setFormData] = useState(null); // For storing and displaying results
 
-  const cantSubmitForm =
-    nameErrorText.length !== 0 ||
-    passwordError.length !== 0 ||
-    confirmPasswordError.length !== 0;
   // Add function to validateForm
-  function validateForm() {
-    if (
-      nameErrorText.length === 0 &&
-      passwordError.length === 0 &&
-      confirmPasswordError.length === 0 &&
-      name.length > 0 &&
-      password.length > 0 &&
-      confirmPassword.length > 0
-    ) {
-      setIsFormValid(true);
+  const ValidateForm = (validateFormName, validatePw, validatePwConfirm) => {
+    function conditions(validate, validatePw, validatePwConfirm) {
+      setIsFormValid(
+        nameFormValidation(validateFormName) &&
+          pwFormValidation(validatePw) &&
+          confirmPwValidation(validatePwConfirm)
+      );
     }
-    setIsFormValid(false);
-  }
+    conditions();
+
+    setIsFormValid(isValid);
+    setIsFormValidError(
+      isValid ? '' : 'Please meet conditions of Form to submit.'
+    );
+    console.log(isValid);
+    console.log(
+      nameFormValidation(validateFormName) &&
+        pwFormValidation(validatePw) &&
+        confirmPwValidation(validatePwConfirm)
+    );
+    return isValid;
+  };
 
   // Add function to validate username
-  function validateName(e) {
-    if (name.length < 3) {
+  function validateName(value) {
+    if (value.length < 3) {
       setNameErrorText('Name must be at least 3 characters.');
     } else {
       setNameErrorText('');
     }
   }
   // Add function to validate password
-  function validatePassword(e) {
-    if (password.length < 8) {
+  function validatePassword(value) {
+    if (value.length < 9) {
       setPasswordError('Password must be at least 8 characters.');
     } else {
       setPasswordError('');
@@ -66,16 +71,35 @@ export default function RegistrationForm() {
       ? setConfirmPasswordError('')
       : setConfirmPasswordError('Does not match with password.');
   }
-  // console.log(`before function execute: `, score);
-  // setScore(score + 1);
 
   // Extra add function to validate email
 
   // Add function to handle username change
+  const nameFormValidation = (currentName) => {
+    if (currentName.length === 0 || nameErrorText.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   // Add function to handle password change
+  const pwFormValidation = (currentPw) => {
+    if (currentPw.length === 0 || passwordError.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   // Add function to handle confirm password change
+  const confirmPwValidation = (currentPwConfirm) => {
+    if (currentPwConfirm.length === 0 || confirmPasswordError.length > 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   // Extra - Add function to handle email value change
 
@@ -102,7 +126,8 @@ export default function RegistrationForm() {
                 onChange={(e) => {
                   const value = e.target.value;
                   setName(value);
-                  validateName();
+                  validateName(value);
+                  ValidateForm(value, password, confirmPassword);
                 }}
               />
               {nameErrorText && (
@@ -122,7 +147,8 @@ export default function RegistrationForm() {
                 onChange={(e) => {
                   const value = e.target.value;
                   setPassword(value);
-                  validatePassword(e);
+                  validatePassword(value);
+                  ValidateForm(value, password, confirmPassword);
                 }}
               />
               {passwordError && (
@@ -147,9 +173,10 @@ export default function RegistrationForm() {
 
                   setConfirmPassword(value);
                   validateConfirmPassword(value);
-                  validateForm();
+                  ValidateForm(value, password, confirmPassword);
                 }}
               />
+
               {confirmPasswordError && (
                 <p className="text-red-500 text-sm mt-2">
                   {confirmPasswordError}
@@ -168,13 +195,20 @@ export default function RegistrationForm() {
               />
               <p className="text-red-500 text-sm mt-2"></p>
             </div>
+            {console.log(` ${nameFormValidation(name)} &&
+        ${pwFormValidation(password)} &&
+        ${confirmPwValidation(confirmPassword)}
+        final check : ${isFormValid}`)}
             <button
               type="submit"
               className={`w-full py-2 rounded bg-blue-600`}
-              disabled={isFormValid}
+              disabled={!isFormValid}
             >
               Register
             </button>
+            {!isFormValid && (
+              <p className="text-red-500 text-sm mt-2">Please fill out form</p>
+            )}
           </form>
         </div>
 
