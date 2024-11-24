@@ -27,24 +27,17 @@ export default function RegistrationForm() {
 
   // Add function to validateForm
   const ValidateForm = (validateFormName, validatePw, validatePwConfirm) => {
-    function conditions(validate, validatePw, validatePwConfirm) {
-      setIsFormValid(
-        nameFormValidation(validateFormName) &&
-          pwFormValidation(validatePw) &&
-          confirmPwValidation(validatePwConfirm)
-      );
-    }
-    conditions();
+    const isValid =
+      nameFormValidation(validateFormName) &&
+      pwFormValidation(validatePw) &&
+      confirmPwValidation(validatePwConfirm);
 
+    console.log(`isValid: ${nameFormValidation(validateFormName)} &&
+      ${pwFormValidation(validatePw)} &&
+      ${confirmPwValidation(validatePwConfirm)}`);
     setIsFormValid(isValid);
     setIsFormValidError(
       isValid ? '' : 'Please meet conditions of Form to submit.'
-    );
-    console.log(isValid);
-    console.log(
-      nameFormValidation(validateFormName) &&
-        pwFormValidation(validatePw) &&
-        confirmPwValidation(validatePwConfirm)
     );
     return isValid;
   };
@@ -148,7 +141,7 @@ export default function RegistrationForm() {
                   const value = e.target.value;
                   setPassword(value);
                   validatePassword(value);
-                  ValidateForm(value, password, confirmPassword);
+                  ValidateForm(name, value, confirmPassword);
                 }}
               />
               {passwordError && (
@@ -173,7 +166,7 @@ export default function RegistrationForm() {
 
                   setConfirmPassword(value);
                   validateConfirmPassword(value);
-                  ValidateForm(value, password, confirmPassword);
+                  ValidateForm(name, password, value);
                 }}
               />
 
