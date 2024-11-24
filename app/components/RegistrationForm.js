@@ -25,26 +25,25 @@ export default function RegistrationForm() {
   // Add state to set formData
   const [formData, setFormData] = useState(null); // For storing and displaying results
 
-  // Add function to validateForm
-  const ValidateForm = (validateFormName, validatePw, validatePwConfirm) => {
-    const isValid =
+  function conditions(validateFormName, validatePw, validatePwConfirm) {
+    return (
       nameFormValidation(validateFormName) &&
       pwFormValidation(validatePw) &&
-      confirmPwValidation(validatePwConfirm);
-
-    console.log(`isValid: ${nameFormValidation(validateFormName)} &&
-      ${pwFormValidation(validatePw)} &&
-      ${confirmPwValidation(validatePwConfirm)}`);
+      confirmPwValidation(validatePwConfirm)
+    );
+  }
+  // Add function to validateForm
+  function validateForm(validateFormName, validatePw, validatePwConfirm) {
+    const isValid = conditions(validateFormName, validatePw, validatePwConfirm);
     setIsFormValid(isValid);
     setIsFormValidError(
       isValid ? '' : 'Please meet conditions of Form to submit.'
     );
-    return isValid;
-  };
+  }
 
   // Add function to validate username
   function validateName(value) {
-    if (value.length < 3) {
+    if (value.length < 4) {
       setNameErrorText('Name must be at least 3 characters.');
     } else {
       setNameErrorText('');
@@ -87,11 +86,7 @@ export default function RegistrationForm() {
 
   // Add function to handle confirm password change
   const confirmPwValidation = (currentPwConfirm) => {
-    if (currentPwConfirm.length === 0 || confirmPasswordError.length > 0) {
-      return false;
-    } else {
-      return true;
-    }
+    return currentPwConfirm.length > 0 && currentPwConfirm === password;
   };
 
   // Extra - Add function to handle email value change
@@ -106,7 +101,12 @@ export default function RegistrationForm() {
           <h1 className="text-2xl font-bold text-blue-500 mb-6 text-center">
             Registration Form
           </h1>
-          <form className="space-y-4">
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              preventDefault();
+            }}
+          >
             <div>
               <label htmlFor="username" className="block font-semibold mb-2">
                 Username:
@@ -120,14 +120,13 @@ export default function RegistrationForm() {
                   const value = e.target.value;
                   setName(value);
                   validateName(value);
-                  ValidateForm(value, password, confirmPassword);
+                  validateForm(value, password, confirmPassword);
                 }}
               />
               {nameErrorText && (
                 <p className="text-red-500 text-sm mt-2">{nameErrorText}</p>
               )}
             </div>
-
             <div>
               <label htmlFor="password" className="block font-semibold mb-2">
                 Password:
@@ -141,14 +140,13 @@ export default function RegistrationForm() {
                   const value = e.target.value;
                   setPassword(value);
                   validatePassword(value);
-                  ValidateForm(name, value, confirmPassword);
+                  validateForm(name, value, confirmPassword);
                 }}
               />
               {passwordError && (
                 <p className="text-red-500 text-sm mt-2">{passwordError}</p>
               )}
             </div>
-
             <div>
               <label
                 htmlFor="confirmPassword"
@@ -166,7 +164,7 @@ export default function RegistrationForm() {
 
                   setConfirmPassword(value);
                   validateConfirmPassword(value);
-                  ValidateForm(name, password, value);
+                  validateForm(name, password, value);
                 }}
               />
 
@@ -176,7 +174,6 @@ export default function RegistrationForm() {
                 </p>
               )}
             </div>
-
             <div>
               <label htmlFor="email" className="block font-semibold mb-2">
                 Email (Optional):
@@ -188,10 +185,10 @@ export default function RegistrationForm() {
               />
               <p className="text-red-500 text-sm mt-2"></p>
             </div>
-            {console.log(` ${nameFormValidation(name)} &&
+            {/* {console.log(` ${nameFormValidation(name)} &&
         ${pwFormValidation(password)} &&
-        ${confirmPwValidation(confirmPassword)}
-        final check : ${isFormValid}`)}
+        ${confirmPwValidation(confirmPassword)} */}
+            {/* final check : ${isFormValid}`)} */}
             <button
               type="submit"
               className={`w-full py-2 rounded bg-blue-600`}
